@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <link href="./main.css" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script>
+
+    var proto_list = [];
+
+    function equal(buf1, buf2) {
+        if (buf1.byteLength != buf2.byteLength) return false;
+        var dv1 = new Int8Array(buf1);
+        var dv2 = new Int8Array(buf2);
+        for (var i = 0; i != buf1.byteLength; i++) {
+          if (dv1[i] != dv2[i]) return false;
+        }
+        return true;
+    }
+
+    function handleFileSelect(evt) {
+      evt.stopPropagation();
+      evt.preventDefault();
+
+      $('#output')[0].innerText = "";
+
+      var files = evt.dataTransfer.files; // FileList object.
+      var output = [];
+      for (var i = 0, f; f = files[i]; i++) {
+        var reader = new FileReader();
+        reader.onload = (function (theFile) {
+          return function (e) {
+            var select_proto = $("#proto-list-select")[0].value;
+            if(select_proto === 'auto-detect'){
+              Object.entries(ConstructorsDict).forEach(([key, value]) => {
+                try {
+                  console.log(btoa(e.target.result));
+                  var base64_data = btoa(e.target.result);
+                  var message = new ConstructorsDict[key].deserializeBinary(base64_data);
+                  var message2base64 = btoa(
+                    new Uint8Array(message.serializeBinary())
+                      .reduce((data, byte) => data + String.fromCharCode(byte), '')
+                  );
+
+                  if (base64_data == message2base64) {
+                    $('#output')[0].innerText += key + ":\n" + JSON.stringify(message.toObject(), null, 4) + "\n\n";
+                    return true;
+                  }
+                  else {
+                    console.log("verify " + key + "wrong, try another.");
+                    return false;
+                  }
+                }
+                catch (e) {
+                  console.log("exception:", e, "\n try another constructor");
+                  return false;
+                }
+              });
+            }else{
+              console.log(e.target.result);
+              var message = new ConstructorsDict[select_proto].deserializeBinary(btoa(e.target.result));
+              $('#output')[0].innerText += JSON.stringify(message.toObject(), null, 4) + "\n";
+            }
+          };
+        })(f);
+
+        reader.readAsBinaryString(f);
+      }
+    }
+
+    function handleDragOver(evt) {
+      evt.stopPropagation();
+      evt.preventDefault();
+      evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+    }
+
+    $(document).ready(function () {
+	  /*
+      // Setup the dnd listeners.
+      // var dropZone = document.getElementById('drop_zone');
+      var dropZone = document.getElementById('container');
+      dropZone.addEventListener('dragover', handleDragOver, false);
+      dropZone.addEventListener('drop', handleFileSelect, false);
+	  */
+	  
+	  
+	  $('#output')[0].innerText = "ccc";
+    });
+
+  </script>
+</head>
+
+<body>
+  <div id="container">
+    <select id="proto-list-select">
+    </select>
+    <div id="drop_zone">Drop files anywhere</div>
+    <div id="output"></div>
+  </div>
+</body>
+
+</html>

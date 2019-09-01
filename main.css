@@ -1,0 +1,28 @@
+.container {
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+#proto-list-select {
+    padding: 5px;
+    margin: 5px 0px;
+}
+
+#drop_zone {
+    border: 2px dashed #bbb;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    padding: 25px;
+    text-align: center;
+    font: 20pt bold 'Vollkorn';
+    color: #bbb;
+}
+
+#output {
+    border: 1px solid #999;
+    margin: 10px 0px;
+    width: 100%;
+    min-height: 500px;
+    white-space: pre;
+}
