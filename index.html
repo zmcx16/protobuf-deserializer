@@ -58,7 +58,7 @@
               });
             }else{
               console.log(e.target.result);
-              var message = new ConstructorsDict[select_proto].deserializeBinary(btoa(e.target.result));
+              var message = new ConstructorsDict["proto.Line"].deserializeBinary(btoa(e.target.result));
               $('#output')[0].innerText += JSON.stringify(message.toObject(), null, 4) + "\n";
             }
           };
@@ -74,17 +74,33 @@
       evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
     }
 
+    function saveByteArray(reportName, byte) {
+      var blob = new Blob([byte], { type: "text/plain" });
+      var link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      var fileName = reportName;
+      link.download = fileName;
+      link.click();
+    };
+
     $(document).ready(function () {
-	  /*
+	  
       // Setup the dnd listeners.
       // var dropZone = document.getElementById('drop_zone');
       var dropZone = document.getElementById('container');
       dropZone.addEventListener('dragover', handleDragOver, false);
       dropZone.addEventListener('drop', handleFileSelect, false);
-	  */
 	  
-	  
-	  $('#output')[0].innerText = "ccc";
+      jQuery.ajax({
+        url: '997dddf3-f972-42c6-b3e8-3af7517c968d.js',
+        dataType: 'script',
+        success: function () {
+          console.log('done');
+        },
+        async: true
+      });
+
+	    $('#output')[0].innerText = "ccc";
     });
 
   </script>
@@ -96,6 +112,7 @@
     </select>
     <div id="drop_zone">Drop files anywhere</div>
     <div id="output"></div>
+    <a href="" id="a">click here to download your file</a>
   </div>
 </body>
 

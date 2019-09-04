@@ -1,0 +1,8 @@
+//polyline2.proto
+syntax = "proto2";
+
+import "Polyline.proto";
+
+message Polylines {
+  repeated Polyline polyline = 1;
+}
