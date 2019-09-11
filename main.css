@@ -1,3 +1,101 @@
+.wrapper{
+    width: 1020px;
+    margin: 0 auto;
+    font-family: 'Comic Sans', 'Comic Sans MS';
+}
+
+.kanban .title{
+    position: absolute;
+    text-align: center;
+}
+
+.kanban .title1, .kanban .title2{
+    font-size: x-large;
+}
+
+.kanban .note{
+    margin-left: 200px;
+}
+
+.prepare-data{
+    margin: 20px 0px;
+}
+
+.prepare-data .step1{
+    width: 480px;
+    display: inline-block;
+}
+
+.step .description{
+    padding: 10px 0px;
+}
+
+.upload-panel{
+    padding: 0px;
+}
+
+.drop-zone{
+    border: 2px dashed #bbb;
+    min-height: 200px;
+    position: relative;
+}
+
+.upload-icon{
+    position: relative;
+    text-align: center;
+    top: 40px;
+}
+
+.drag-description{
+    position: relative;
+    text-align: center;
+    top: 30px;
+}
+
+.upload-file-icon{
+padding: 0px;
+    width: fit-content;
+    padding: 0px 5px;
+    background: #ccc;
+    color: white;
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+}
+
+.ctrl-pannel{
+    padding: 10px 0px;
+    position: relative;
+}
+
+.click-btn-v2{
+    height: 35px;
+    width: 90px;
+    background: #66DDAA;
+    font-size: larger;
+    font-family: inherit;
+    margin-right: 30px;
+}
+
+.click-btn-v2:hover {
+    background-color: #58bc9b;
+}
+
+.last-button{
+    position: absolute;
+    right: 3px;
+    width: 120px;
+    margin-right: 0px;
+}
+
+.prepare-data .step2{
+    width: 480px;
+    display: inline-block;
+    margin-left: 47px;
+}
+
+
+
 .container {
     padding: 10px;
     border: 1px solid #ccc;

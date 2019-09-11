@@ -2,6 +2,7 @@
 <html lang="en-us">
 
 <head>
+  <link href="./common.css" rel="stylesheet">
   <link href="./main.css" rel="stylesheet">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script>
@@ -110,16 +111,56 @@
   <div class="wrapper">
     <div class="kanban">
       <div class="title">
-        Google Protobuf Deserializer
+        <div class="title1">Google Protobuf</div>
+        <div class="title2">Deserializer</div>
       </div>
       <div class="note">
-        Support to deserialize the protobuf data to pretty json display (Note: your .proto file will be send to backend server to
-        generate proto.js library, and then the front end will use this proto.js library to deserialize your pb data, your pb data will
-        not be send to backend serve.)
+        Support to deserialize the protobuf data to pretty json display. (Note: your .proto file will be send to backend server to
+        generate proto.js library, and then the browser will use this proto.js library to deserialize your pb data, your pb data will
+        not be send to backend server)
       </div>
     </div>
     <div class="prepare-data">
-      prepare-page
+      <div class="step step1">
+        <div class="description">Step1: Upload your proto files, and then click Generate button.</div>
+        <div class="upload-panel">
+          <div class="drop-zone" id="drop-proto">
+            <div class="upload-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 48 48">
+              <path style="fill: gold;"
+                d="M38.71 20.07C37.35 13.19 31.28 8 24 8c-5.78 0-10.79 3.28-13.3 8.07C4.69 16.72 0 21.81 0 28c0 6.63 5.37 12 12 12h26c5.52 0 10-4.48 10-10 0-5.28-4.11-9.56-9.29-9.93zM28 26v8h-8v-8h-6l10-10 10 10h-6z" />
+              </svg>
+            </div>
+            <div class="drag-description">Drag your .proto files here.</div>
+            <div class="upload-file-icon" id="proto-icon">0</div>
+          </div>
+          <div class="ctrl-pannel">
+            <button id="upload-proto-button" type="button" class="click-btn-v2">Upload</button>
+            <button id="clear-proto-button" type="button" class="click-btn-v2">Clear</button>
+            <button id="Generate-protojs-button" type="button" class="click-btn-v2 last-button">Generate</button>
+          </div>
+        </div>
+      </div>
+      <div class="step step2">
+        <div class="description">Step2: Upload your pd data, and then click Deserialize button.</div>
+        <div class="upload-panel">
+          <div class="drop-zone" id="drop-proto">
+            <div class="upload-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 48 48">
+                <path style="fill: gold;"
+                  d="M38.71 20.07C37.35 13.19 31.28 8 24 8c-5.78 0-10.79 3.28-13.3 8.07C4.69 16.72 0 21.81 0 28c0 6.63 5.37 12 12 12h26c5.52 0 10-4.48 10-10 0-5.28-4.11-9.56-9.29-9.93zM28 26v8h-8v-8h-6l10-10 10 10h-6z" />
+              </svg>
+            </div>
+            <div class="drag-description">Drag your pd data files here.</div>
+            <div class="upload-file-icon" id="proto-icon">0</div>
+          </div>
+          <div class="ctrl-pannel">
+            <button id="upload-proto-button" type="button" class="click-btn-v2">Upload</button>
+            <button id="clear-proto-button" type="button" class="click-btn-v2">Clear</button>
+            <button id="Generate-protojs-button" type="button" class="click-btn-v2 last-button">Deserialize</button>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="status">
       status-page
