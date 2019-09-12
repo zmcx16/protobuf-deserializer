@@ -19,6 +19,7 @@
 
 .prepare-data{
     margin: 20px 0px;
+    position: relative;
 }
 
 .prepare-data .step1{
@@ -91,9 +92,81 @@ padding: 0px;
 .prepare-data .step2{
     width: 480px;
     display: inline-block;
-    margin-left: 47px;
+    position: absolute;
+    right: 0px;
 }
 
+.status{
+    border: 1px solid #ccc;
+    padding: 10px;
+    position: relative;
+    margin-top: 50px;
+    margin-bottom: 100px;
+}
+
+.status-data{
+    padding: 5px 0px;
+}
+
+.status-title{
+    min-width: 70px;
+    display: inline-block;    
+}
+
+.status-content{
+    padding: 0px;
+}
+
+.display-page{
+    position: relative;
+}
+
+.display-title{
+    position: absolute;
+    font-size: x-large;
+    top: -45px;
+}
+
+#download-output-button{
+    right: 150px;
+    top: -45px;
+}
+
+#clear-output-button{
+    padding: 0px;
+    top: -45px;
+}
+
+.display-output{
+    border: 2px solid #bbb;
+    margin-top: 45px;
+    width: 100%;
+    min-height: 300px;
+}
+
+.footer-page{
+    margin: 20px 0px;
+}
+
+.relate-links{
+    margin-bottom: 30px;
+}
+
+.relate-links-title{
+    padding: 5px 0px;
+    font-size: x-large;
+}
+
+.relate-link{
+    padding-top: 10px;
+    margin-right: 30px;
+    font-size: larger;
+}
+
+.copyright-icon{
+    font-family: fantasy;
+    padding-right: 3px;
+}
 
 
 .container {

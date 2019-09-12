@@ -2,6 +2,8 @@
 <html lang="en-us">
 
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Google Protobuf Deserializer</title>
   <link href="./common.css" rel="stylesheet">
   <link href="./main.css" rel="stylesheet">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -163,19 +165,27 @@
       </div>
     </div>
     <div class="status">
-      status-page
+      <div class="status-data"><span class="status-title">Step1:</span><span class="status-content" id="step1-status">No proto file</span></div>
+      <div class="status-data"><span class="status-title">Step2:</span><span class="status-content" id="step2-status">No proto data file</span></div>
     </div>
     <div class="display-page">
-      deserialize-btn, download-btn, display text
+      <div class="display-title">Deserialize Result:</div>
+      <button id="download-output-button" type="button" class="click-btn-v2 last-button">Download</button>
+      <button id="clear-output-button" type="button" class="click-btn-v2 last-button">Clear</button>
+      <div class="display-output">CCC</div>
     </div>
     <div class="footer-page">
       <div class="relate-links">
+        <div class="relate-links-title">Relate Links:</div>
+        <a class="relate-link" target="_blank" href="https://github.com/zmcx16/protobuf-deserializer/">protobuf-deserializer Github</a>
+        <a class="relate-link" target="_blank" href="https://project.zmcx16.moe/">zmcx16's Side Projects</a>
+        <a class="relate-link" target="_blank" href="https://blog.zmcx16.moe/">zmcx16's Blog</a>
       </div>
-      <div class="copyright">
-      </div>
+      <div class="copyright"><span class="copyright-icon">©</span>zmcx16 All rights reserved.</div>
     </div>
   </div>
-  <div id="container">
+
+  <div id="container" style="display:none;">
     <select id="proto-list-select">
     </select>
     <div id="drop_zone">Drop files anywhere</div>
