@@ -9,6 +9,12 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script>
 
+    const drap_zone_bg = "#ffffff";
+    const drap_zone_hover_bg = "#cccccc";
+
+    const drap_zone_border = "2px dashed #bbb";
+    const drap_zone_hover_border = "2px solid #bbb";
+
     var proto_list = [];
 
     function equal(buf1, buf2) {
@@ -103,13 +109,55 @@
         async: true
       });
 
+
 	    $('#output')[0].innerText = "ccc";
+
+      $('.drop-zone').css('background', drap_zone_bg);
+      $('.drop-zone').css('border', drap_zone_border);
+
+      $('html').on('dragover', function(evt){
+        $('.drop-zone').css('border', drap_zone_hover_border);
+      });
+
+      $('.drop-zone').on('dragover', function (evt) {
+        evt.stopPropagation();
+        evt.preventDefault();
+        $(this).css('background', drap_zone_hover_bg);
+        $(this).addClass("activate");
+      });
+
+      $('#drop-proto')[0].addEventListener('drop', function (evt) {
+        evt.stopPropagation();
+        evt.preventDefault();
+        console.log("ccc");
+        var files = evt.dataTransfer.files;
+        console.log(evt.dataTransfer);
+        console.log(files);
+      }, false);
+
+      $('.drop-zone').on('dragleave', function () {
+        setTimeout(function () {
+          console.log('xx');
+          if (!$('.drop-zone').hasClass("activate")) {
+            $('.drop-zone').css('background', drap_zone_bg);
+          }
+        }, 10);
+        $(this).removeClass("activate");
+      });
+
+
+      $('html').on('mouseout', function (evt) {
+        $('.drop-zone').css('background', drap_zone_bg);
+        $('.drop-zone').css('border', drap_zone_border);
+      });
+
     });
 
   </script>
 </head>
 
 <body>
+  <div class="wrapper-0">
   <div class="wrapper">
     <div class="kanban">
       <div class="title">
@@ -183,6 +231,7 @@
       </div>
       <div class="copyright"><span class="copyright-icon">©</span>zmcx16 All rights reserved.</div>
     </div>
+  </div>
   </div>
 
   <div id="container" style="display:none;">

@@ -1,3 +1,14 @@
+body{
+    background: url("./bg-org.png");
+    margin: 0px;
+}
+
+.wrapper-0{
+    width: 1120px;
+    margin: 0 auto;
+    background: #fffdd7;
+}
+
 .wrapper{
     width: 1020px;
     margin: 0 auto;
@@ -7,6 +18,7 @@
 .kanban .title{
     position: absolute;
     text-align: center;
+    top: 5px;
 }
 
 .kanban .title1, .kanban .title2{
@@ -15,6 +27,7 @@
 
 .kanban .note{
     margin-left: 200px;
+    padding-top: 5px;
 }
 
 .prepare-data{
@@ -168,6 +181,9 @@ padding: 0px;
     padding-right: 3px;
 }
 
+.copyright{
+    padding-bottom: 10px;
+}
 
 .container {
     padding: 10px;
