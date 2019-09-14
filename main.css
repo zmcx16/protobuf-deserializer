@@ -75,6 +75,7 @@ padding: 0px;
     position: absolute;
     bottom: 3px;
     right: 3px;
+    cursor: default;
 }
 
 .ctrl-pannel{
