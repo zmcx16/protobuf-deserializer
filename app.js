@@ -9,6 +9,8 @@ const drap_zone_hover_border = "2px solid #bbb";
 const upload_file_icon_bg = "#ccc";
 const upload_file_icon_val_bg = "#66DDAA";
 
+const max_proto_size = 512000;
+
 var proto_list = [];
 var proto_js = null;
 var proto_data = [];
@@ -16,6 +18,29 @@ var proto_data = [];
 var generating_js_interval = null;
 var deserializing_interval = null;
 
+// common function
+const typeSizes = {
+    "undefined": () => 0,
+    "boolean": () => 4,
+    "number": () => 8,
+    "string": item => 2 * item.length,
+    "object": item => !item ? 0 : Object
+        .keys(item)
+        .reduce((total, key) => sizeOf(key) + sizeOf(item[key]) + total, 0)
+};
+
+const sizeOf = value => typeSizes[typeof value](value);
+
+function getProtosSize(){
+    var total_size = 0;
+    for (var i = 0; i < proto_list.length; i++){
+        total_size += sizeOf(proto_list[i].data);
+    }
+
+    return total_size;
+}
+
+// main process
 function handleAddProto(files) {
     console.log(files);
     proto_js = null;
@@ -27,6 +52,23 @@ function handleAddProto(files) {
                 proto_list.push({ 'name': theFile.name, 'data': base64_data });
                 setUploadFileIcon('proto-icon', proto_list.length);
                 showStep1Status();
+            };
+        })(f);
+
+        reader.readAsBinaryString(f);
+    }
+}
+
+function handleAddPbData(files) {
+    console.log(files);
+    for (var i = 0, f; f = files[i]; i++) {
+        var reader = new FileReader();
+        reader.onload = (function (theFile) {
+            return function (e) {
+                var base64_data = btoa(e.target.result);
+                proto_data.push({ 'name': theFile.name, 'data': base64_data });
+                setUploadFileIcon('pbdata-icon', proto_data.length);
+                showStep2Status();
             };
         })(f);
 
@@ -97,23 +139,6 @@ function deserializePbData() {
     }
 
     $('#display-title')[0].scrollIntoView({ behavior: "smooth" });
-}
-
-function handleAddPbData(files) {
-    console.log(files);
-    for (var i = 0, f; f = files[i]; i++) {
-        var reader = new FileReader();
-        reader.onload = (function (theFile) {
-            return function (e) {
-                var base64_data = btoa(e.target.result);
-                proto_data.push({ 'name': theFile.name, 'data': base64_data });
-                setUploadFileIcon('pbdata-icon', proto_data.length);
-                showStep2Status();
-            };
-        })(f);
-
-        reader.readAsBinaryString(f);
-    }
 }
 
 // ui logic function
@@ -232,8 +257,12 @@ $(document).ready(function () {
 
     $('#generate-protojs-button').on('click', function () {
         if (proto_list.length > 0) {
-            generateProtoJS();
-            setGenerateProtoJSButton(true);
+            if (getProtosSize() <= max_proto_size) {
+                generateProtoJS();
+                setGenerateProtoJSButton(true);
+            }else{
+                showStep1Status('.proto files exceeding 512 kb in size');
+            }
         } else {
             showStep1Status();
         }
