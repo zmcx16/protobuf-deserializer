@@ -15,6 +15,10 @@ body{
     font-family: 'Comic Sans', 'Comic Sans MS';
 }
 
+.sample-file{
+    padding-left: 30px;
+}
+
 .kanban .title{
     position: absolute;
     text-align: center;
@@ -42,6 +46,21 @@ body{
 
 .step .description{
     padding: 10px 0px;
+}
+
+.step .description-2{
+    padding: 0px;
+    padding-bottom: 5px;
+    display: inline-block;
+}
+
+.select-proto{
+    display: inline-block;
+}
+
+.select-proto > *{
+    max-width: 265px;
+    font-family: inherit;
 }
 
 .upload-panel{
@@ -99,7 +118,7 @@ padding: 0px;
 .last-button{
     position: absolute;
     right: 3px;
-    width: 120px;
+    width: 150px;
     margin-right: 0px;
 }
 
@@ -131,18 +150,18 @@ padding: 0px;
     padding: 0px;
 }
 
-.display-page{
+#display-page{
     position: relative;
 }
 
-.display-title{
+#display-title{
     position: absolute;
     font-size: x-large;
     top: -45px;
 }
 
 #download-output-button{
-    right: 150px;
+    right: 200px;
     top: -45px;
 }
 
@@ -151,11 +170,12 @@ padding: 0px;
     top: -45px;
 }
 
-.display-output{
+#display-output{
     border: 2px solid #bbb;
     margin-top: 45px;
     width: 100%;
     min-height: 300px;
+    white-space: pre;
 }
 
 .footer-page{

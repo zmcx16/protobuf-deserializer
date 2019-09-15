@@ -1,287 +1,13 @@
 <!DOCTYPE html>
 <html lang="en-us">
-
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>Google Protobuf Deserializer</title>
   <link href="./common.css" rel="stylesheet">
   <link href="./main.css" rel="stylesheet">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  <script>
-
-    const drap_zone_bg = "#ffffff";
-    const drap_zone_hover_bg = "#cccccc";
-
-    const drap_zone_border = "2px dashed #bbb";
-    const drap_zone_hover_border = "2px solid #bbb";
-
-    const upload_file_icon_bg = "#ccc";
-    const upload_file_icon_val_bg = "#66DDAA";
-
-    var proto_list = [];
-    var proto_js = null;
-    var proto_data = [];
-
-    var generating_js_interval = null;
-
-    function equal(buf1, buf2) {
-        if (buf1.byteLength != buf2.byteLength) return false;
-        var dv1 = new Int8Array(buf1);
-        var dv2 = new Int8Array(buf2);
-        for (var i = 0; i != buf1.byteLength; i++) {
-          if (dv1[i] != dv2[i]) return false;
-        }
-        return true;
-    }
-
-    function handleFileSelect(evt) {
-      evt.stopPropagation();
-      evt.preventDefault();
-
-      $('#output')[0].innerText = "";
-
-      var files = evt.dataTransfer.files; // FileList object.
-      var output = [];
-      for (var i = 0, f; f = files[i]; i++) {
-        var reader = new FileReader();
-        reader.onload = (function (theFile) {
-          return function (e) {
-            var select_proto = $("#proto-list-select")[0].value;
-            if(select_proto === 'auto-detect'){
-              Object.entries(ConstructorsDict).forEach(([key, value]) => {
-                try {
-                  console.log(btoa(e.target.result));
-                  var base64_data = btoa(e.target.result);
-                  var message = new ConstructorsDict[key].deserializeBinary(base64_data);
-                  var message2base64 = btoa(
-                    new Uint8Array(message.serializeBinary())
-                      .reduce((data, byte) => data + String.fromCharCode(byte), '')
-                  );
-
-                  if (base64_data == message2base64) {
-                    $('#output')[0].innerText += key + ":\n" + JSON.stringify(message.toObject(), null, 4) + "\n\n";
-                    return true;
-                  }
-                  else {
-                    console.log("verify " + key + "wrong, try another.");
-                    return false;
-                  }
-                }
-                catch (e) {
-                  console.log("exception:", e, "\n try another constructor");
-                  return false;
-                }
-              });
-            }else{
-              console.log(e.target.result);
-              var message = new ConstructorsDict["proto.Line"].deserializeBinary(btoa(e.target.result));
-              $('#output')[0].innerText += JSON.stringify(message.toObject(), null, 4) + "\n";
-            }
-          };
-        })(f);
-
-        reader.readAsBinaryString(f);
-      }
-    }
-
-    function handleDragOver(evt) {
-      evt.stopPropagation();
-      evt.preventDefault();
-      evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
-    }
-
-    function saveByteArray(reportName, byte) {
-      var blob = new Blob([byte], { type: "text/plain" });
-      var link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      var fileName = reportName;
-      link.download = fileName;
-      link.click();
-    };
-
-
-
-    function handleAddProto(files) {
-      console.log(files);
-      proto_js = null;
-      for (var i = 0, f; f = files[i]; i++) {
-        var reader = new FileReader();
-        reader.onload = (function (theFile) {
-          return function (e) {
-            var base64_data = btoa(e.target.result);
-            proto_list.push({'name': theFile.name, 'data': base64_data});
-            setUploadFileIcon('proto-icon', proto_list.length);
-            showStep1Status();
-          };
-        })(f);
-
-        reader.readAsBinaryString(f);
-      }
-    }
-
-    function generateProtoJS(){
-      $.ajax({
-        type: 'POST',
-        url: 'https://zmcx16.moe/protobuf-deserializer/api/task/buildjs',
-        async: true,
-        data: "="+JSON.stringify({'files': proto_list}),
-        success: function (data, textStatus, xhr) {
-          if (data) {
-            //http://zmcx16.moe/protobuf-deserializer/run/output/protojs/997dddf3-f972-42c6-b3e8-3af7517c968d.js
-            console.log(data);
-            if(data.ret === 0){
-              proto_js = data.js_path;
-              $.getScript('http://zmcx16.moe/protobuf-deserializer/run/output/protojs/'+ proto_js, function () {
-                console.log(ConstructorsDict);
-              });
-              showStep1Status();
-            }else{
-              showStep1Status('Generated proto js library was failed, err code = ' + data.ret.toString());
-            }
-          }
-          else {
-            showStep1Status('Generated proto js library was failed, err = ' + textStatus);
-            console.log('get failed: ' + textStatus);
-            console.log('get failed: ' + xhr);
-          }
-          setGenerateProtoJSButton(false);
-        },
-        error: function (jqXHR, textStatus, errorThrown) { 
-          showStep1Status('Generated proto js library was failed, err = ' + textStatus);
-          console.log('get failed: ' + jqXHR.status);
-          console.log('get failed: ' + jqXHR.readyState);
-          console.log('get failed: ' + textStatus);
-          setGenerateProtoJSButton(false);
-        },
-        timeout: 180000
-      });
-      
-    }
-
-    // common function
-    function setUploadFileIcon(id, length){
-      $('#' + id)[0].innerText = length;
-      $('#'+ id).css('background', length > 0 ? upload_file_icon_val_bg : upload_file_icon_bg);
-    }
-
-    function setGenerateProtoJSButton(generating){
-      if(generating){
-        $('#generate-protojs-button')[0].innerText = "Generating";
-        $('#generate-protojs-button').prop('disabled', true);
-        generating_js_interval = setInterval(() => {
-          var dot_cnt = $('#generate-protojs-button')[0].innerText.split(".").length - 1;
-          if (dot_cnt >= 3){
-            $('#generate-protojs-button')[0].innerText = "Generating";
-          }else{
-            $('#generate-protojs-button')[0].innerText += ".";
-          }
-        }, 1000);
-      }else{
-        $('#generate-protojs-button').prop('disabled', false);
-        $('#generate-protojs-button')[0].innerText = "Generate";
-        clearInterval(generating_js_interval);
-      }
-    }
-
-    function showStep1Status(err){
-      if(err){
-        $('#step1-status')[0].innerText = err;
-      }
-      else if(proto_js){
-        $('#step1-status')[0].innerText = 'Generated ' + proto_js + ' was successful, continue to do step2.';
-      }
-      else if(proto_list.length){
-        $('#step1-status')[0].innerText = 'proto files: ' + proto_list[0].name;
-        for(var i=1; i< proto_list.length; i++){
-          $('#step1-status')[0].innerText +=  ", " + proto_list[i].name;
-        }
-      }else{
-        $('#step1-status')[0].innerText = "No proto file";
-      }
-    }
-
-    $(document).ready(function () {
-	  
-      // Setup the dnd listeners.
-      // var dropZone = document.getElementById('drop_zone');
-      var dropZone = document.getElementById('container');
-      dropZone.addEventListener('dragover', handleDragOver, false);
-      dropZone.addEventListener('drop', handleFileSelect, false);
-	  
-      jQuery.ajax({
-        url: '997dddf3-f972-42c6-b3e8-3af7517c968d.js',
-        dataType: 'script',
-        success: function () {
-          console.log('done');
-        },
-        async: true
-      });
-
-
-	    $('#output')[0].innerText = "ccc";
-
-      $('.drop-zone').css('background', drap_zone_bg);
-      $('.drop-zone').css('border', drap_zone_border);
-
-      $('html').on('dragover', function(evt){
-        $('.drop-zone').css('border', drap_zone_hover_border);
-      });
-
-      $('.drop-zone').on('dragover', function (evt) {
-        evt.stopPropagation();
-        evt.preventDefault();
-        $(this).css('background', drap_zone_hover_bg);
-        $(this).addClass("activate");
-      });
-
-      $('.drop-zone').on('dragleave', function () {
-        setTimeout(function () {
-          console.log('xx');
-          if (!$('.drop-zone').hasClass("activate")) {
-            $('.drop-zone').css('background', drap_zone_bg);
-          }
-        }, 10);
-        $(this).removeClass("activate");
-      });
-
-      $('html').on('mouseout', function (evt) {
-        $('.drop-zone').css('background', drap_zone_bg);
-        $('.drop-zone').css('border', drap_zone_border);
-      });
-
-
-      // upload event
-      // step1
-      $('#drop-proto')[0].addEventListener('drop', (evt) => {
-        evt.stopPropagation();
-        evt.preventDefault();
-        handleAddProto(evt.dataTransfer.files)
-      });
-      $('#upload-proto-input')[0].addEventListener('change', (evt) => {
-        console.log(evt.target.files); // get file object
-        handleAddProto(evt.target.files)
-      });
-
-      $('#upload-proto-button').on('click', function () {
-        $('#upload-proto-input')[0].value = "";
-        $('#upload-proto-input').click();
-      });
-
-      $('#clear-proto-button').on('click', function () {
-        proto_list = [];
-        setUploadFileIcon('proto-icon', proto_list.length);
-        showStep1Status();
-      });
-
-      $('#generate-protojs-button').on('click', function () {
-        generateProtoJS();
-        setGenerateProtoJSButton(true);
-      });
-    });
-
-  </script>
+  <script src="./jquery.min.js"></script>
+  <script src="./app.js"></script>
 </head>
-
 <body>
   <div class="wrapper-0">
   <div class="wrapper">
@@ -291,14 +17,15 @@
         <div class="title2">Deserializer</div>
       </div>
       <div class="note">
-        Support to deserialize the protobuf data to pretty json display. (Note: your .proto file will be send to backend server to
+        <span>Support to deserialize the protobuf data to pretty json display. (Note: your .proto file will be send to backend server to
         generate proto.js library, and then the browser will use this proto.js library to deserialize your pb data, your pb data will
-        not be send to backend server)
+        not be send to backend server)</span><span class="sample-file"><a href=".\sample.zip">Download sample file</a></span>
       </div>
     </div>
     <div class="prepare-data">
       <div class="step step1">
         <div class="description">Step1: Upload your proto files, and then click Generate button.</div>
+        <div class="description-2">Note. It needs to take a little time to generate proto library.</div>
         <div class="upload-panel">
           <div class="drop-zone" id="drop-proto">
             <div class="upload-icon">
@@ -320,8 +47,14 @@
       </div>
       <div class="step step2">
         <div class="description">Step2: Upload your pd data, and then click Deserialize button.</div>
+        <div class="description-2">Choose Target Deserializer: </div>
+        <div class="select-proto">
+          <select id="proto-select">
+            <option value="auto-detect">Auto Detect</option>
+          </select>
+        </div>
         <div class="upload-panel">
-          <div class="drop-zone" id="drop-proto">
+          <div class="drop-zone" id="drop-pbdata">
             <div class="upload-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 48 48">
                 <path style="fill: gold;"
@@ -329,11 +62,12 @@
               </svg>
             </div>
             <div class="drag-description">Drag your pd data files here.</div>
-            <div class="upload-file-icon" id="proto-icon">0</div>
+            <div class="upload-file-icon" id="pbdata-icon">0</div>
           </div>
           <div class="ctrl-pannel">
-            <button id="upload-proto-button" type="button" class="click-btn-v2">Upload</button>
-            <button id="clear-proto-button" type="button" class="click-btn-v2">Clear</button>
+            <input id="upload-pbdata-input" type="file" name="upload-pbdata" data-target="file-uploader" multiple="multiple" style="display:none;">
+            <button id="upload-pbdata-button" type="button" class="click-btn-v2">Upload</button>
+            <button id="clear-pbdata-button" type="button" class="click-btn-v2">Clear</button>
             <button id="deserialize-button" type="button" class="click-btn-v2 last-button">Deserialize</button>
           </div>
         </div>
@@ -343,11 +77,11 @@
       <div class="status-data"><span class="status-title">Step1:</span><span class="status-content" id="step1-status">No proto file</span></div>
       <div class="status-data"><span class="status-title">Step2:</span><span class="status-content" id="step2-status">No proto data file</span></div>
     </div>
-    <div class="display-page">
-      <div class="display-title">Deserialize Result:</div>
+    <div id="display-page">
+      <div id="display-title">Deserialize Result:</div>
       <button id="download-output-button" type="button" class="click-btn-v2 last-button">Download</button>
       <button id="clear-output-button" type="button" class="click-btn-v2 last-button">Clear</button>
-      <div class="display-output">CCC</div>
+      <div id="display-output"></div>
     </div>
     <div class="footer-page">
       <div class="relate-links">
@@ -360,14 +94,5 @@
     </div>
   </div>
   </div>
-
-  <div id="container" style="display:none;">
-    <select id="proto-list-select">
-    </select>
-    <div id="drop_zone">Drop files anywhere</div>
-    <div id="output"></div>
-    <a href="" id="a">click here to download your file</a>
-  </div>
 </body>
-
 </html>
