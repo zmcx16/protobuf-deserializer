@@ -6,7 +6,7 @@ Your .proto files will be send to backend server to generate proto.js library, a
 
 # Demo
 
-![image](https://github.com/zmcx16/PhotoMosaic-Artifact/blob/master/examples/demo.png)
+![image](https://github.com/zmcx16/protobuf-deserializer/blob/master/demo/demo.gif)
 
 
 # License
