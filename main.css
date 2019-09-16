@@ -3,20 +3,22 @@ body{
     margin: 0px;
 }
 
-#gradient-horizontal {
-  --color-stop-1: #a770ef;
-  --color-stop-2: #cf8bf3;
-  --color-stop-3: #fdb99b;
+#gradient-horizontal{
+    --color-stop-1: #a770ef;
+    --color-stop-2: #cf8bf3;
+    --color-stop-3: #fdb99b;
 }
-#gradient-vertical-1 {
-  --color-stop-1: #a770ef;
-  --color-stop-2: #cf8bf3;
-  --color-stop-3: #fdb99b;
+
+#gradient-vertical-1{
+    --color-stop-1: #a770ef;
+    --color-stop-2: #cf8bf3;
+    --color-stop-3: #fdb99b;
 }
-#gradient-vertical-2 {
-  --color-stop-1: #00c3ff;
-  --color-stop-2: #77e190;
-  --color-stop-3: #ffff1c;
+
+#gradient-vertical-2{
+    --color-stop-1: #00c3ff;
+    --color-stop-2: #77e190;
+    --color-stop-3: #ffff1c;
 }
 
 .wrapper-0{

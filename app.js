@@ -29,122 +29,17 @@ const typeSizes = {
     "undefined": () => 0,
     "boolean": () => 4,
     "number": () => 8,
-    "string": item => 2 * item.length,
-    "object": item => !item ? 0 : Object
-        .keys(item)
-        .reduce((total, key) => sizeOf(key) + sizeOf(item[key]) + total, 0)
+    "string": (item) => 2 * item.length
 };
 
-const sizeOf = value => typeSizes[typeof value](value);
+const sizeOf = (value) => typeSizes[typeof value](value);
 
 function getProtosSize(){
     var total_size = 0;
-    for (var i = 0; i < proto_list.length; i++){
-        total_size += sizeOf(proto_list[i].data);
-    }
-
-    return total_size;
-}
-
-// main process
-function handleAddProto(files) {
-    console.log(files);
-    proto_js = null;
-    for (var i = 0, f; f = files[i]; i++) {
-        var reader = new FileReader();
-        reader.onload = (function (theFile) {
-            return function (e) {
-                var base64_data = btoa(e.target.result);
-                proto_list.push({ 'name': theFile.name, 'data': base64_data });
-                setUploadFileIcon('proto-icon', proto_list.length);
-                showStep1Status();
-            };
-        })(f);
-
-        reader.readAsBinaryString(f);
-    }
-}
-
-function handleAddPbData(files) {
-    console.log(files);
-    for (var i = 0, f; f = files[i]; i++) {
-        var reader = new FileReader();
-        reader.onload = (function (theFile) {
-            return function (e) {
-                var base64_data = btoa(e.target.result);
-                proto_data.push({ 'name': theFile.name, 'data': base64_data });
-                setUploadFileIcon('pbdata-icon', proto_data.length);
-                showStep2Status();
-            };
-        })(f);
-
-        reader.readAsBinaryString(f);
-    }
-}
-
-function generateProtoJS() {
-    $.ajax({
-        type: 'POST',
-        url: 'https://zmcx16.moe/protobuf-deserializer/api/task/buildjs',
-        async: true,
-        data: "=" + JSON.stringify({ 'files': proto_list }),
-        success: function (data, textStatus, xhr) {
-            if (data) {
-                console.log(data);
-                if (data.ret === 0) {
-                    proto_js = data.js_path;
-                    $.getScript('https://zmcx16.moe/protobuf-deserializer/run/output/protojs/' + proto_js, function () {
-                        console.log(ConstructorsDict);
-
-                        // add proto class to select-proto
-                        $("#proto-select")[0].innerHTML = "";
-                        $("#proto-select").append('<option value="auto-detect">Auto Detect</option>');
-                        Object.entries(ConstructorsDict).forEach(([key, value]) => {
-                            let temp = '<option value="{name}">{name}</option>'.split("{name}").join(key);
-                            $("#proto-select").append(temp);
-                        });
-                    });
-                    showStep1Status();
-                } else {
-                    showStep1Status('Generated proto js library was failed, err code = ' + data.ret.toString());
-                }
-            }
-            else {
-                showStep1Status('Generated proto js library was failed, err = ' + textStatus);
-                console.log('get failed: ' + textStatus);
-                console.log('get failed: ' + xhr);
-            }
-            setGenerateProtoJSButton(false);
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            showStep1Status('Generated proto js library was failed, err = ' + textStatus);
-            console.log('get failed: ' + jqXHR.status);
-            console.log('get failed: ' + jqXHR.readyState);
-            console.log('get failed: ' + textStatus);
-            setGenerateProtoJSButton(false);
-        },
-        timeout: 180000
+    proto_list.forEach(function (element) {
+        total_size += sizeOf(element.data);
     });
-
-}
-
-function deserializePbData() {
-    $('#display-output')[0].innerText = '';
-    for (var i = 0; i < proto_data.length; i++) {
-        Object.entries(ConstructorsDict).forEach(([key, value]) => {
-            try {
-                //console.log(proto_data[i].data);
-                var message = new ConstructorsDict[key].deserializeBinary(proto_data[i].data);
-                $('#display-output')[0].innerText += key + ":\n" + JSON.stringify(message.toObject(), null, 4);
-                $('#display-output')[0].innerText += "\n\n*****************************************************\n\n";
-            }
-            catch (e) {
-                console.log("exception:", e, "\n try another constructor");
-            }
-        });
-    }
-
-    $('#display-title')[0].scrollIntoView({ behavior: "smooth" });
+    return total_size;
 }
 
 // ui logic function
@@ -217,6 +112,108 @@ function selectBasicColor()
     $('.wrapper-0').css('background', bg_color[select].bg2);
 }
 
+
+// main process
+function handleAddProto(files) {
+    proto_js = null;
+    Object.entries(files).forEach(([key, value]) => {
+        var reader = new FileReader();
+        reader.onload = (function (theFile) {
+            return function (e) {
+                var base64_data = btoa(e.target.result);
+                proto_list.push({ 'name': theFile.name, 'data': base64_data });
+                setUploadFileIcon('proto-icon', proto_list.length);
+                showStep1Status();
+            };
+        })(value);
+
+        reader.readAsBinaryString(value);
+    });
+}
+
+function handleAddPbData(files) {
+    console.log(files);
+    Object.entries(files).forEach(([key, value]) => {
+        var reader = new FileReader();
+        reader.onload = (function (theFile) {
+            return function (e) {
+                var base64_data = btoa(e.target.result);
+                proto_data.push({ 'name': theFile.name, 'data': base64_data });
+                setUploadFileIcon('pbdata-icon', proto_data.length);
+                showStep2Status();
+            };
+        })(value);
+
+        reader.readAsBinaryString(value);
+    });
+}
+
+function generateProtoJS() {
+    $.ajax({
+        type: 'POST',
+        url: 'https://zmcx16.moe/protobuf-deserializer/api/task/buildjs',
+        async: true,
+        data: "=" + JSON.stringify({ 'files': proto_list }),
+        success: function (data, textStatus, xhr) {
+            if (data) {
+                console.log(data);
+                if (data.ret === 0) {
+                    proto_js = data.js_path;
+                    $.getScript('https://zmcx16.moe/protobuf-deserializer/run/output/protojs/' + proto_js, function () {
+                        console.log(ConstructorsDict);
+
+                        // add proto class to select-proto
+                        $("#proto-select")[0].innerHTML = "";
+                        $("#proto-select").append('<option value="auto-detect">Auto Detect</option>');
+                        Object.entries(ConstructorsDict).forEach(([key, value]) => {
+                            let temp = '<option value="{name}">{name}</option>'.split("{name}").join(key);
+                            $("#proto-select").append(temp);
+                        });
+                    });
+                    showStep1Status();
+                } else {
+                    showStep1Status('Generated proto js library was failed, err code = ' + data.ret.toString());
+                }
+            }
+            else {
+                showStep1Status('Generated proto js library was failed, err = ' + textStatus);
+                console.log('get failed: ' + textStatus);
+                console.log('get failed: ' + xhr);
+            }
+            setGenerateProtoJSButton(false);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            showStep1Status('Generated proto js library was failed, err = ' + textStatus);
+            console.log('get failed: ' + jqXHR.status);
+            console.log('get failed: ' + jqXHR.readyState);
+            console.log('get failed: ' + textStatus);
+            setGenerateProtoJSButton(false);
+        },
+        timeout: 180000
+    });
+
+}
+
+function deserializePbData() {
+    $('#display-output')[0].innerText = '';
+    for (var i = 0; i < proto_data.length; i++) {
+        Object.entries(ConstructorsDict).forEach(([key, value]) => {
+            try {
+                //console.log(proto_data[i].data);
+                var message = new ConstructorsDict[key].deserializeBinary(proto_data[i].data);
+                $('#display-output')[0].innerText += key + ":\n" + JSON.stringify(message.toObject(), null, 4);
+                $('#display-output')[0].innerText += "\n\n*****************************************************\n\n";
+            }
+            catch (e) {
+                console.log("exception:", e, "\n try another constructor");
+            }
+        });
+    }
+
+    $('#display-title')[0].scrollIntoView({ behavior: "smooth" });
+}
+
+// start
 $(document).ready(function () {
 
     // init
