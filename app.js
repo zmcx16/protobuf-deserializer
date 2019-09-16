@@ -175,31 +175,38 @@ function setGenerateProtoJSButton(generating) {
 function showStep1Status(err) {
     if (err) {
         $('#step1-status')[0].innerText = err;
+        $('#step1-status').css('color','red');
     }
     else if (proto_js) {
         $('#step1-status')[0].innerText = 'Generated ' + proto_js + ' was successful, continue to do step2.';
+        $('#step1-status').css('color', 'initial');
     }
     else if (proto_list.length) {
         $('#step1-status')[0].innerText = 'proto files: ' + proto_list[0].name;
         for (var i = 1; i < proto_list.length; i++) {
             $('#step1-status')[0].innerText += ", " + proto_list[i].name;
         }
+        $('#step1-status').css('color', 'initial');
     } else {
         $('#step1-status')[0].innerText = "No proto file";
+        $('#step1-status').css('color', 'initial');
     }
 }
 
 function showStep2Status(err) {
     if (err) {
         $('#step2-status')[0].innerText = err;
+        $('#step1-status').css('color', 'red');
     }
     else if (proto_data.length) {
         $('#step2-status')[0].innerText = 'deserialize target files: ' + proto_data[0].name;
         for (var i = 1; i < proto_data.length; i++) {
             $('#step2-status')[0].innerText += ", " + proto_data[i].name;
         }
+        $('#step1-status').css('color', 'initial');
     } else {
         $('#step2-status')[0].innerText = "No proto data file";
+        $('#step1-status').css('color', 'initial');
     }
 }
 
