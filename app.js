@@ -93,7 +93,7 @@ function generateProtoJS() {
                 console.log(data);
                 if (data.ret === 0) {
                     proto_js = data.js_path;
-                    $.getScript('http://zmcx16.moe/protobuf-deserializer/run/output/protojs/' + proto_js, function () {
+                    $.getScript('https://zmcx16.moe/protobuf-deserializer/run/output/protojs/' + proto_js, function () {
                         console.log(ConstructorsDict);
 
                         // add proto class to select-proto
