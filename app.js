@@ -1,5 +1,11 @@
 'use strict';
 
+const bg_color = [  { 'bg1': 'aliceblue', 'bg2': 'rgb(255,251,248)' },
+                    { 'bg1': 'cornsilk', 'bg2': 'cornsilk' },
+                    { 'bg1': 'honeydew', 'bg2': 'honeydew' },
+                    { 'bg1': 'mintcream', 'bg2': 'mintcream' },
+                    { 'bg1': 'snow', 'bg2': 'snow' }];
+
 const drap_zone_bg = "#ffffff";
 const drap_zone_hover_bg = "#cccccc";
 
@@ -197,12 +203,20 @@ function showStep2Status(err) {
     }
 }
 
+function selectBasicColor()
+{
+    var select = Math.floor(Math.random() * bg_color.length);
+    $('body').css('background-color', bg_color[select].bg1);
+    $('.wrapper-0').css('background', bg_color[select].bg2);
+}
+
 $(document).ready(function () {
 
     // init
+    selectBasicColor();
     $('.drop-zone').css('background', drap_zone_bg);
     $('.drop-zone').css('border', drap_zone_border);
-
+    
     // register ui event
     $('html').on('dragover', function (evt) {
         $('.drop-zone').css('border', drap_zone_hover_border);
@@ -247,6 +261,10 @@ $(document).ready(function () {
         $('#upload-proto-input')[0].value = "";
         $('#upload-proto-input').click();
     });
+    $('#drop-proto').on('click', function () {
+        $('#upload-proto-input')[0].value = "";
+        $('#upload-proto-input').click();
+    });
 
     $('#clear-proto-button').on('click', function () {
         proto_list = [];
@@ -280,6 +298,10 @@ $(document).ready(function () {
     });
 
     $('#upload-pbdata-button').on('click', function () {
+        $('#upload-pbdata-input')[0].value = "";
+        $('#upload-pbdata-input').click();
+    });
+    $('#drop-pbdata').on('click', function () {
         $('#upload-pbdata-input')[0].value = "";
         $('#upload-pbdata-input').click();
     });

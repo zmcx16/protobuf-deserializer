@@ -9,6 +9,23 @@
   <script src="./app.js"></script>
 </head>
 <body>
+  <svg aria-hidden="true" focusable="false" style="width:0;height:0;position:absolute;">
+    <linearGradient id="gradient-horizontal">
+      <stop offset="0%" stop-color="var(--color-stop-1)" />
+      <stop offset="50%" stop-color="var(--color-stop-2)" />
+      <stop offset="100%" stop-color="var(--color-stop-3)" />
+    </linearGradient>
+    <linearGradient id="gradient-vertical-1" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--color-stop-1)" />
+      <stop offset="50%" stop-color="var(--color-stop-2)" />
+      <stop offset="100%" stop-color="var(--color-stop-3)" />
+    </linearGradient>
+    <linearGradient id="gradient-vertical-2" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--color-stop-1)" />
+      <stop offset="50%" stop-color="var(--color-stop-2)" />
+      <stop offset="100%" stop-color="var(--color-stop-3)" />
+    </linearGradient>
+  </svg>
   <div class="wrapper-0">
   <div class="wrapper">
     <div class="kanban">
@@ -17,9 +34,8 @@
         <div class="title2">Deserializer</div>
       </div>
       <div class="note">
-        <span>Support to deserialize the protobuf data to pretty json display. (Note: your .proto file will be send to backend server to
-        generate proto.js library, and then the browser will use this proto.js library to deserialize your pb data, your pb data will
-        not be send to backend server)</span><span class="sample-file"><a href=".\sample.zip">Download sample file</a></span>
+        <span>Support to deserialize the protobuf data to pretty json display. (Note: your .proto files will be sent to the backend server to generate proto.js library, and then the browser will use this proto.js library to deserialize your pb data, your pb data will not be sent to backend server)</span>
+        <span class="sample-file"><a href=".\sample.zip">Download sample file</a></span>
       </div>
     </div>
     <div class="prepare-data">
@@ -29,8 +45,8 @@
         <div class="upload-panel">
           <div class="drop-zone" id="drop-proto">
             <div class="upload-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 48 48">
-              <path style="fill: gold;"
+              <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 48 48">
+              <path style="fill: url(#gradient-vertical-1) gray;"
                 d="M38.71 20.07C37.35 13.19 31.28 8 24 8c-5.78 0-10.79 3.28-13.3 8.07C4.69 16.72 0 21.81 0 28c0 6.63 5.37 12 12 12h26c5.52 0 10-4.48 10-10 0-5.28-4.11-9.56-9.29-9.93zM28 26v8h-8v-8h-6l10-10 10 10h-6z" />
               </svg>
             </div>
@@ -56,8 +72,8 @@
         <div class="upload-panel">
           <div class="drop-zone" id="drop-pbdata">
             <div class="upload-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 48 48">
-                <path style="fill: gold;"
+              <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 48 48">
+                <path style="fill: url(#gradient-vertical-2) gray;"
                   d="M38.71 20.07C37.35 13.19 31.28 8 24 8c-5.78 0-10.79 3.28-13.3 8.07C4.69 16.72 0 21.81 0 28c0 6.63 5.37 12 12 12h26c5.52 0 10-4.48 10-10 0-5.28-4.11-9.56-9.29-9.93zM28 26v8h-8v-8h-6l10-10 10 10h-6z" />
               </svg>
             </div>
