@@ -77,10 +77,11 @@ function showStep1Status(err) {
         $('#step1-status').css('color', 'initial');
     }
     else if (proto_list.length) {
-        $('#step1-status')[0].innerText = 'proto files: ' + proto_list[0].name;
-        for (var i = 1; i < proto_list.length; i++) {
-            $('#step1-status')[0].innerText += ", " + proto_list[i].name;
-        }
+        var file_list = [];
+        proto_list.forEach(function (element) {
+            file_list.push(element.name);
+        });
+        $('#step1-status')[0].innerText = 'proto files: ' + file_list.join(", ");
         $('#step1-status').css('color', 'initial');
     } else {
         $('#step1-status')[0].innerText = "No proto file";
@@ -94,10 +95,11 @@ function showStep2Status(err) {
         $('#step1-status').css('color', 'red');
     }
     else if (proto_data.length) {
-        $('#step2-status')[0].innerText = 'deserialize target files: ' + proto_data[0].name;
-        for (var i = 1; i < proto_data.length; i++) {
-            $('#step2-status')[0].innerText += ", " + proto_data[i].name;
-        }
+        var file_list = [];
+        proto_data.forEach(function(element){
+            file_list.push(element.name);
+        });
+        $('#step2-status')[0].innerText = 'deserialize target files: ' + file_list.join(", ");
         $('#step1-status').css('color', 'initial');
     } else {
         $('#step2-status')[0].innerText = "No proto data file";
@@ -254,11 +256,11 @@ $(document).ready(function () {
     $('#drop-proto')[0].addEventListener('drop', (evt) => {
         evt.stopPropagation();
         evt.preventDefault();
-        handleAddProto(evt.dataTransfer.files)
+        handleAddProto(evt.dataTransfer.files);
     });
     $('#upload-proto-input')[0].addEventListener('change', (evt) => {
         console.log(evt.target.files); // get file object
-        handleAddProto(evt.target.files)
+        handleAddProto(evt.target.files);
     });
 
     $('#upload-proto-button').on('click', function () {
@@ -294,11 +296,11 @@ $(document).ready(function () {
     $('#drop-pbdata')[0].addEventListener('drop', (evt) => {
         evt.stopPropagation();
         evt.preventDefault();
-        handleAddPbData(evt.dataTransfer.files)
+        handleAddPbData(evt.dataTransfer.files);
     });
     $('#upload-pbdata-input')[0].addEventListener('change', (evt) => {
         console.log(evt.target.files); // get file object
-        handleAddPbData(evt.target.files)
+        handleAddPbData(evt.target.files);
     });
 
     $('#upload-pbdata-button').on('click', function () {
