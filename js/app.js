@@ -220,6 +220,7 @@ $(document).ready(function () {
 
     // init
     selectBasicColor();
+    $("#display-output").css("min-height", $("body").height() - $("#display-output").height());
     $('.drop-zone').css('background', drap_zone_bg);
     $('.drop-zone').css('border', drap_zone_border);
     
