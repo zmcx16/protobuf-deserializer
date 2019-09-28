@@ -37,6 +37,10 @@ body{
     padding-left: 30px;
 }
 
+.kanban{
+	height: 100px;
+}
+
 .kanban .title{
     position: absolute;
     text-align: center;
