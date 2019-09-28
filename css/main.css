@@ -1,6 +1,11 @@
+html {
+  height: 100%;
+}
+
 body{
     background: url("../image/bg-org.png");
     margin: 0px;
+    min-height: 100%;
 }
 
 #gradient-horizontal{
@@ -202,7 +207,7 @@ padding: 0px;
 }
 
 .footer-page{
-    margin: 20px 0px;
+    margin-top: 20px;
 }
 
 .relate-links{
